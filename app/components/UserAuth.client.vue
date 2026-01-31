@@ -8,13 +8,17 @@
         </div>
         <div v-else class="flex items-center gap-2">
             <input
-                v-model="usernameInput"
+                v-model.trim="usernameInput"
                 type="text"
                 placeholder="Enter name..."
                 class="text-sm p-1 border rounded"
                 @keyup.enter="login"
             />
-            <button class="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600" @click="login">
+            <button
+                type="button"
+                class="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                @click="login"
+            >
                 Login
             </button>
         </div>
@@ -29,8 +33,8 @@ const userStore = useUserStore();
 const usernameInput = ref('');
 
 const login = () => {
-    if (usernameInput.value.trim()) {
-        userStore.setUser(usernameInput.value.trim());
+    if (usernameInput.value) {
+        userStore.setUser(usernameInput.value);
         usernameInput.value = '';
     }
 }

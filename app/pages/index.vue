@@ -2,8 +2,12 @@
     <main>
         <NewsList :articles="articles" />
 
-        <div v-if="pending" class="flex justify-center my-8">
+        <div v-if="showInitialSpinner" class="flex justify-center my-8">
             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"/>
+        </div>
+
+        <div v-if="showLoadMoreSpinner" class="flex justify-center my-8">
+            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"/>
         </div>
 
         <div ref="loadMoreTrigger" class="h-10"/>
@@ -11,13 +15,17 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, ref} from 'vue';
+import {computed, ref, watch} from 'vue';
 import type {Article, NewsPayload} from "../types/news.types";
+import {fetchNewsPage} from "../utils/newsApi";
 
 const articles = ref<Article[]>([]);
 const page = ref(1);
 const pageSize = 18;
-const apiKey = '930b3fc8f2564bb382739710d55c8972';
+const config = useRuntimeConfig();
+
+const apiKey = config.public?.newsApiKey || '';
+const fetchPage = (pageNum: number) => fetchNewsPage(pageNum, pageSize, apiKey);
 
 // SEO Meta
 useSeoMeta({
@@ -27,48 +35,44 @@ useSeoMeta({
     ogDescription: 'Stay updated with the latest news from around the world.',
 })
 
-// Initial fetch with SSR support
-const {data, status} = await useAsyncData<NewsPayload>('news', () =>
-    $fetch(`https://newsapi.org/v2/everything?q=news&page=${page.value}&pageSize=${pageSize}&apiKey=${apiKey}`)
+const {data, status} = await useAsyncData<NewsPayload>(
+    'news',
+    () => fetchPage(page.value)
 );
 
-const pending = computed(() => status.value === 'pending');
+const isLoadingMore = ref(false);
+const showInitialSpinner = computed(() => status.value === 'pending' && articles.value.length === 0);
+const showLoadMoreSpinner = computed(() => isLoadingMore.value);
 
-if (data.value && (data.value as any).articles) {
-    articles.value = (data.value as any).articles;
+if (data.value?.articles) {
+    articles.value = data.value.articles;
 }
 
-const fetchMore = async () => {
-    if (status.value === 'pending') {
+watch(page, async (newPage) => {
+    if (newPage <= 1) {
+        return;
+    }
+    if (isLoadingMore.value) {
         return;
     }
 
-    page.value++
     try {
-        const response: NewsPayload = await $fetch(
-            `https://newsapi.org/v2/everything?q=news&page=${page.value}&pageSize=${pageSize}&apiKey=${apiKey}`
-        );
+        isLoadingMore.value = true;
+        const response = await fetchPage(newPage);
 
         if (response.articles) {
             articles.value.push(...response.articles);
         }
     } catch (e) {
         console.error('Error fetching more news:', e);
-    }
-}
-
-// Infinite scroll trigger
-const loadMoreTrigger = ref(null);
-
-onMounted(() => {
-    const observer = new IntersectionObserver((entries) => {
-        if (entries[0]?.isIntersecting) {
-            fetchMore()
-        }
-    }, {rootMargin: '200px'})
-
-    if (loadMoreTrigger.value) {
-        observer.observe(loadMoreTrigger.value)
+    } finally {
+        isLoadingMore.value = false;
     }
 })
+
+// Infinite scroll trigger
+const loadMoreTrigger = ref<HTMLElement | null>(null);
+useInfiniteScroll(loadMoreTrigger, () => {
+    page.value++;
+});
 </script>

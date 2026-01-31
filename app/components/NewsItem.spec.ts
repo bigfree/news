@@ -12,7 +12,7 @@ describe('NewsItem', () => {
         source: {name: 'Test Source', id: 'test-source'},
         content: 'Content',
         author: 'Author',
-    }
+    };
 
     it('renders article title and description', () => {
         const wrapper = mount(NewsItem, {
@@ -29,7 +29,7 @@ describe('NewsItem', () => {
 
         expect(wrapper.text()).toContain('Test Article Title');
         expect(wrapper.text()).toContain('Test Description');
-    })
+    });
 
     it('renders "No image" placeholder when urlToImage is missing', () => {
         const articleWithoutImage = {...mockArticle, urlToImage: null};
@@ -46,5 +46,5 @@ describe('NewsItem', () => {
         });
 
         expect(wrapper.text()).toContain('No image');
-    })
+    });
 })

@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white">
+    <article class="flex flex-col border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white">
         <img
             v-if="article.urlToImage"
             :src="article.urlToImage"
@@ -11,7 +11,7 @@
             No image
         </div>
 
-        <div class="p-4 flex flex-col flex-grow">
+        <section class="p-4 flex flex-col flex-grow">
             <h2 class="text-lg font-semibold mb-2 line-clamp-2">{{ article.title }}</h2>
             <p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">{{ article.description }}</p>
 
@@ -31,8 +31,8 @@
                     :article-published-at="article.publishedAt"
                 />
             </div>
-        </div>
-    </div>
+        </section>
+    </article>
 </template>
 
 <script setup lang="ts">

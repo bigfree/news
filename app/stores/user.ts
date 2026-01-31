@@ -1,6 +1,8 @@
 import {defineStore} from 'pinia';
 import type {ArticleSource} from '~/types/news.types';
 
+const STORAGE_KEY = 'user-store';
+
 export const useUserStore = defineStore('user', {
     state: () => ({
         currentUser: '',
@@ -61,7 +63,7 @@ export const useUserStore = defineStore('user', {
                     .filter(([user]) => user !== "")
                     .map(([user, set]) => [user, Array.from(set)]);
 
-                localStorage.setItem('user-store', JSON.stringify({
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({
                     currentUser: this.currentUser,
                     favoritesMap: serializableFavorites,
                 }));
@@ -69,7 +71,7 @@ export const useUserStore = defineStore('user', {
         },
         loadFromStorage(): void {
             if (import.meta.client && !this.isLoaded) {
-                const data = localStorage.getItem('user-store');
+                const data = localStorage.getItem(STORAGE_KEY);
 
                 if (data) {
                     const parsed = JSON.parse(data);

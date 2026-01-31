@@ -5,14 +5,14 @@ import {useUserStore} from './user'
 describe('User Store', () => {
     beforeEach(() => {
         setActivePinia(createPinia());
-    })
+    });
 
     it('sets the current user correctly', () => {
         const store = useUserStore();
         store.setUser('Adam');
         expect(store.currentUser).toBe('Adam');
         expect(store.favoritesMap.has('Adam')).toBe(true);
-    })
+    });
 
     it('toggles favorites correctly', () => {
         const store = useUserStore();
@@ -26,12 +26,12 @@ describe('User Store', () => {
         // Remove from favorites
         store.toggleFavorite(articleId);
         expect(store.isFavorite(articleId)).toBe(false);
-    })
+    });
 
     it('does not create an entry for empty username', () => {
         const store = useUserStore();
         store.setUser('');
         expect(store.currentUser).toBe('');
         expect(store.favoritesMap.has('')).toBe(false);
-    })
+    });
 })

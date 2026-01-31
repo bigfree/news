@@ -1,9 +1,11 @@
 <template>
     <button
         v-if="userStore.currentUser"
+        type="button"
         class="p-2 rounded-full hover:bg-gray-100 transition-colors w-10 h-10"
         :title="isFavorite ? 'Remove from favorites' : 'Add to favorites'"
-        @click="userStore.toggleFavorite(articleId)"
+        :aria-pressed="isFavorite"
+        @click="toggleFavorite"
     >
         <span v-if="isFavorite" class="text-red-500">❤️</span>
         <span v-else class="text-gray-400">🤍</span>
@@ -29,4 +31,8 @@ const articleId = computed(() => userStore.computedId(
     props.articlePublishedAt
 ));
 const isFavorite = computed(() => userStore.isFavorite(articleId.value));
+
+const toggleFavorite = () => {
+    userStore.toggleFavorite(articleId.value);
+};
 </script>
