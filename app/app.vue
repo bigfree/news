@@ -1,14 +1,19 @@
 <template>
-  <div>
-<!--    <Navbar/>-->
-    <NuxtPage :user="user" />
-  </div>
+    <div>
+        <AppHeader />
+        <main class="container mx-auto px-4 py-8">
+            <NuxtPage/>
+        </main>
+    </div>
 </template>
 
 <script setup>
-const user = ref({ name: 'Candidate', role: 'Admin' });
+import {useUserStore} from '~/stores/user';
+import {onMounted} from 'vue';
 
-const createNewUser = () => {
+const userStore = useUserStore();
 
-}
+onMounted(() => {
+    userStore.loadFromStorage();
+})
 </script>
