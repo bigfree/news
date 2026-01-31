@@ -1,0 +1,31 @@
+{
+  "name": "news-gallery",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "preview": "nuxt preview",
+    "typecheck:prepare": "nuxt prepare",
+    "typecheck": "nuxt typecheck",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "@nuxt/eslint": "^1.13.0",
+    "@nuxtjs/tailwindcss": "^6.14.0",
+    "nuxt": "^4.3.0",
+    "vue": "^3.5.27",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vue-tsc": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=22.16.0"
+  },
+  "volta": {
+    "node": "24.13.0"
+  }
+}
